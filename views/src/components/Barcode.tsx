@@ -28,8 +28,8 @@ const Barcode = (props: any) => {
                             props.dispatch({type: 'SET_SEARCHING_DATA_LIST', payload: findItem});
                         } else {
                             alert('등록되지 않은 상품입니다.');
-                            props.setBarcodeState(false);
                         }
+                        props.setBarcodeState(false);
                     }
                 }}
             />
