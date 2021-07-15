@@ -89,9 +89,10 @@ const ProductReg = (props: any) => {
                         variant="contained"
                         color="primary"
                         onClick={(e) => {
-                            let blankChk = getProductInfo.findIndex((items: any) => {
+                            let blankChk: any = getProductInfo.findIndex((items: any) => {
                                 return items.val === '';
                             });
+
                             if (blankChk === -1) {
                                 if (props.productModalTitle === '등록') {
                                     axios
@@ -166,8 +167,6 @@ const ProductReg = (props: any) => {
 
                                     props.changeProductModal(false);
                                 }
-                            } else {
-                                alert('입력하지 않은 값이 있습니다.');
                             }
                         }}
                     >
