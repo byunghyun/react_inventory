@@ -167,6 +167,8 @@ const ProductReg = (props: any) => {
 
                                     props.changeProductModal(false);
                                 }
+                            } else {
+                                alert('입력하지 않은 값이 있습니다.');
                             }
                         }}
                     >
