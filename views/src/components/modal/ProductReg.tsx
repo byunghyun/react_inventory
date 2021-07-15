@@ -89,60 +89,49 @@ const ProductReg = (props: any) => {
                         variant="contained"
                         color="primary"
                         onClick={(e) => {
-                            if (props.productModalTitle === '등록') {
-                                axios
-                                    .post(
-                                        '/product/add',
-                                        qs.stringify({
-                                            ProductNum: getProductInfo[0].val,
-                                            BarcodeNum: getProductInfo[2].val,
-                                            ProductNam: getProductInfo[1].val,
-                                            ProductOption: getProductInfo[3].val,
-                                            PackageUnit: getProductInfo[4].val,
-                                            PackageMinUnitQuan: getProductInfo[5].val,
-                                            MinimumUnit: getProductInfo[6].val,
-                                            Processors: 1,
-                                        }),
-                                    )
-                                    .then(function async(res) {
-                                        axios.get('/product/list').then(async (res) => {
-                                            await res.data.map((items: {chk: boolean}, idx: number) => {
-                                                items.chk = false;
+                            let blankChk = getProductInfo.findIndex((items: any) => {
+                                return items.val === '';
+                            });
+                            if (blankChk === -1) {
+                                if (props.productModalTitle === '등록') {
+                                    axios
+                                        .post(
+                                            '/product/add',
+                                            qs.stringify({
+                                                ProductNum: getProductInfo[0].val,
+                                                BarcodeNum: getProductInfo[2].val,
+                                                ProductNam: getProductInfo[1].val,
+                                                ProductOption: getProductInfo[3].val,
+                                                PackageUnit: getProductInfo[4].val,
+                                                PackageMinUnitQuan: getProductInfo[5].val,
+                                                MinimumUnit: getProductInfo[6].val,
+                                                Processors: 1,
+                                            }),
+                                        )
+                                        .then(function async(res) {
+                                            axios.get('/product/list').then(async (res) => {
+                                                await res.data.map((items: {chk: boolean}, idx: number) => {
+                                                    items.chk = false;
+                                                });
+                                                await props.dispatch({type: 'INIT_PRODUCT', payload: res.data});
                                             });
-                                            await props.dispatch({type: 'INIT_PRODUCT', payload: res.data});
-                                        });
-                                        axios.get('/stock/list').then(async (res) => {
-                                            await res.data.map((items: {chk: boolean; WeekShipping: number}, idx: number) => {
-                                                items.chk = false;
+                                            axios.get('/stock/list').then(async (res) => {
+                                                await res.data.map((items: {chk: boolean; WeekShipping: number}, idx: number) => {
+                                                    items.chk = false;
+                                                });
+                                                await props.dispatch({type: 'INIT_STOCK', payload: res.data});
                                             });
-                                            await props.dispatch({type: 'INIT_STOCK', payload: res.data});
-                                        });
 
-                                        props.changeProductModal(false);
-                                    })
-                                    .catch(function (err) {
-                                        console.log(err);
-                                    });
-                            } else if (props.productModalTitle === '수정') {
-                                axios
-                                    .put(
-                                        '/product/mod',
-                                        qs.stringify({
-                                            ProductIdx: findObject.ProductIdx,
-                                            ProductNum: sendData('ProductNum'),
-                                            BarcodeNum: sendData('BarcodeNum'),
-                                            ProductNam: sendData('ProductNam'),
-                                            ProductOption: sendData('ProductOption'),
-                                            PackageUnit: sendData('PackageUnit'),
-                                            PackageMinUnitQuan: sendData('PackageMinUnitQuan'),
-                                            MinimumUnit: sendData('MinimumUnit'),
-                                            Processors: 1,
-                                        }),
-                                    )
-                                    .then(function (res) {
-                                        props.dispatch({
-                                            type: 'UPDATE_PRODUCT',
-                                            payload: {
+                                            props.changeProductModal(false);
+                                        })
+                                        .catch(function (err) {
+                                            console.log(err);
+                                        });
+                                } else if (props.productModalTitle === '수정') {
+                                    axios
+                                        .put(
+                                            '/product/mod',
+                                            qs.stringify({
                                                 ProductIdx: findObject.ProductIdx,
                                                 ProductNum: sendData('ProductNum'),
                                                 BarcodeNum: sendData('BarcodeNum'),
@@ -151,16 +140,34 @@ const ProductReg = (props: any) => {
                                                 PackageUnit: sendData('PackageUnit'),
                                                 PackageMinUnitQuan: sendData('PackageMinUnitQuan'),
                                                 MinimumUnit: sendData('MinimumUnit'),
-                                                chk: false,
-                                            },
+                                                Processors: 1,
+                                            }),
+                                        )
+                                        .then(function (res) {
+                                            props.dispatch({
+                                                type: 'UPDATE_PRODUCT',
+                                                payload: {
+                                                    ProductIdx: findObject.ProductIdx,
+                                                    ProductNum: sendData('ProductNum'),
+                                                    BarcodeNum: sendData('BarcodeNum'),
+                                                    ProductNam: sendData('ProductNam'),
+                                                    ProductOption: sendData('ProductOption'),
+                                                    PackageUnit: sendData('PackageUnit'),
+                                                    PackageMinUnitQuan: sendData('PackageMinUnitQuan'),
+                                                    MinimumUnit: sendData('MinimumUnit'),
+                                                    chk: false,
+                                                },
+                                            });
+                                            props.changeProductModal(false);
+                                        })
+                                        .catch(function (err) {
+                                            console.log(err);
                                         });
-                                        props.changeProductModal(false);
-                                    })
-                                    .catch(function (err) {
-                                        console.log(err);
-                                    });
 
-                                props.changeProductModal(false);
+                                    props.changeProductModal(false);
+                                }
+                            } else {
+                                alert('입력하지 않은 값이 있습니다.');
                             }
                         }}
                     >
