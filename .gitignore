@@ -2,5 +2,5 @@
 /views/node_modules
 /dist
 /DB
-.env
+
 /views/build
