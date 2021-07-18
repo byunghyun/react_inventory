@@ -1,2 +1,6 @@
 /node_modules
 /views/node_modules
+/dist
+/DB
+.env
+/views/build
