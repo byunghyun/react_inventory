@@ -8,7 +8,8 @@ const endWeekDay = moment().startOf('week').add(6, 'days').tz('Asia/Seoul').form
 
 StockRouter.get('/list', (req, res) => {
     connection.query(
-        `SELECT W.ProductIdx, PackageQuan, UnitQuan, AbandonQuan, Processors, SUM(ChgQuan) AS WeekShipping
+        `SELECT W.ProductIdx, PackageQuan, UnitQuan, AbandonQuan, Processors
+        , SUM(IF(W.ProductState = 'O' OR W.ProductState = 'N', ChgQuan, 0)) AS WeekShipping
         FROM  
             (
                 SELECT P.ProductIdx, ChgTarget, IF(ChgTarget = "U", ChgQuan, ChgQuan*PackageMinUnitQuan) AS ChgQuan, ProductState
@@ -16,10 +17,10 @@ StockRouter.get('/list', (req, res) => {
                     (
                         SELECT Productidx, initDate, productState, ChgTarget, ChgQuan
                         FROM StockHisLst
-                        WHERE (ProductState = 'O' OR ProductState = 'N') AND (initDate BETWEEN '${startWeekDay}' AND '${endWeekDay}')
+                        WHERE (initDate BETWEEN '${startWeekDay}' AND '${endWeekDay}')
                     ) H
                 LEFT JOIN ProductLst P ON H.ProductIdx = P.ProductIdx
-        
+
             ) W
         LEFT JOIN StockLst S ON W.ProductIdx = S.ProductIdx
         GROUP BY W.ProductIdx
