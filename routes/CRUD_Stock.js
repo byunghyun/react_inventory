@@ -19,7 +19,7 @@ StockRouter.get('/list', (req, res) => {
                         FROM StockHisLst
                         WHERE (initDate BETWEEN '${startWeekDay}' AND '${endWeekDay}')
                     ) H
-                LEFT JOIN ProductLst P ON H.ProductIdx = P.ProductIdx
+                RIGHT JOIN ProductLst P ON H.ProductIdx = P.ProductIdx
 
             ) W
         LEFT JOIN StockLst S ON W.ProductIdx = S.ProductIdx
